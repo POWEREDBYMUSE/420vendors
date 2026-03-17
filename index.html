@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>420 Fest — Vendor Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #e8e0d0;
+    --dark-green: #2d3d28;
+    --mid-green: #3d5235;
+    --pink: #d4718a;
+    --pink-light: #e8a0b0;
+    --warm-tan: #c9bc9e;
+    --off-white: #f2ede4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--dark-green);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  /* HERO HEADER */
+  .hero {
+    position: relative;
+    background-color: var(--dark-green);
+    padding: 60px 40px 50px;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(212,113,138,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--pink-light);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 15vw, 160px);
+    line-height: 0.88;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
+  }
+
+  .hero-title span {
+    color: var(--pink);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(18px, 3vw, 26px);
+    color: var(--warm-tan);
+    letter-spacing: 0.12em;
+    margin-top: 14px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
+  }
+
+  .hero-details {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+
+  .hero-detail-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.75;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-detail-item::before {
+    content: '◆';
+    color: var(--pink);
+    font-size: 7px;
+  }
+
+  .vendor-fee-badge {
+    display: inline-block;
+    background: var(--pink);
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    padding: 10px 28px;
+    border-radius: 2px;
+    margin-top: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.6s;
+  }
+
+  /* DECORATIVE DIVIDER */
+  .divider {
+    background: var(--dark-green);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow: hidden;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--mid-green);
+  }
+
+  .divider-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--warm-tan);
+    white-space: nowrap;
+    padding: 12px 0;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 6px;
+  }
+
+  .section-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    letter-spacing: 0.04em;
+    color: var(--dark-green);
+    margin-bottom: 6px;
+  }
+
+  .section-body {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #4a5a42;
+    margin-bottom: 36px;
+  }
+
+  /* FORM STYLES */
+  .form-block {
+    margin-bottom: 48px;
+  }
+
+  .form-block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--dark-green);
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--dark-green);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-block-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    background: var(--dark-green);
+    color: var(--cream);
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 0;
+  }
+
+  .field-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .field-group.single {
+    grid-template-columns: 1fr;
+  }
+
+  .field-group.triple {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid-green);
+    margin-bottom: 6px;
+  }
+
+  label .required {
+    color: var(--pink);
+    margin-left: 2px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--off-white);
+    border: 1.5px solid var(--warm-tan);
+    border-radius: 2px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--dark-green);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--dark-green);
+    box-shadow: 0 0 0 3px rgba(45,61,40,0.08);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232d3d28' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  /* CHECKBOX & RADIO */
+  .check-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .check-group.three-col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 12px;
+    border: 1.5px solid var(--warm-tan);
+    border-radius: 2px;
+    background: var(--off-white);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .check-item:hover {
+    border-color: var(--dark-green);
+  }
+
+  .check-item input[type="checkbox"],
+  .check-item input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    accent-color: var(--dark-green);
+    margin-top: 1px;
+    cursor: pointer;
+  }
+
+  .check-item-label {
+    font-size: 13px;
+    color: var(--dark-green);
+    line-height: 1.4;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .check-item-sub {
+    font-size: 11px;
+    color: #6b7b62;
+    margin-top: 2px;
+  }
+
+  /* POLICY BOX */
+  .policy-box {
+    background: var(--dark-green);
+    color: var(--cream);
+    padding: 24px 28px;
+    border-radius: 2px;
+    margin-bottom: 32px;
+  }
+
+  .policy-box h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+    color: var(--pink-light);
+  }
+
+  .policy-box ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .policy-box li {
+    font-size: 13px;
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+    opacity: 0.9;
+  }
+
+  .policy-box li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--pink);
+    font-size: 7px;
+    top: 4px;
+  }
+
+  /* FEE SUMMARY */
+  .fee-summary {
+    background: var(--off-white);
+    border: 2px solid var(--dark-green);
+    border-radius: 2px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+  }
+
+  .fee-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--warm-tan);
+    font-size: 14px;
+  }
+
+  .fee-row:last-child {
+    border-bottom: none;
+  }
+
+  .fee-row.total {
+    padding-top: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .fee-row .amount {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+  }
+
+  .fee-row.total .amount {
+    color: var(--pink);
+    font-size: 22px;
+  }
+
+  /* SUBMIT */
+  .submit-area {
+    text-align: center;
+  }
+
+  .submit-btn {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    background: var(--dark-green);
+    color: var(--cream);
+    border: none;
+    padding: 18px 60px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--pink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .submit-btn:hover::before {
+    transform: scaleX(1);
+  }
+
+  .submit-btn span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .submit-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #6b7b62;
+    margin-top: 12px;
+  }
+
+  /* SUCCESS STATE */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--dark-green);
+    color: var(--cream);
+    border-radius: 2px;
+  }
+
+  .success-msg h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--pink-light);
+    margin-bottom: 12px;
+  }
+
+  .success-msg p {
+    font-size: 15px;
+    line-height: 1.7;
+    opacity: 0.8;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark-green);
+    color: var(--cream);
+    text-align: center;
+    padding: 28px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  footer a { color: var(--pink-light); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .field-group { grid-template-columns: 1fr; }
+    .field-group.triple { grid-template-columns: 1fr 1fr; }
+    .check-group { grid-template-columns: 1fr; }
+    .check-group.three-col { grid-template-columns: 1fr 1fr; }
+    .hero { padding: 48px 24px 40px; }
+    .hero-details { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <p class="hero-eyebrow">And That's OK Presents</p>
+  <h1 class="hero-title">420<span>FEST</span></h1>
+  <p class="hero-subtitle">Wellness &amp; Party — Vendor Application</p>
+  <div class="hero-details">
+    <span class="hero-detail-item">April 19th, 2026</span>
+    <span class="hero-detail-item">1PM – 7PM</span>
+    <span class="hero-detail-item">West Hollywood, CA</span>
+  </div>
+  <div class="vendor-fee-badge">Vendor Fee: $150</div>
+</header>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <span class="divider-text">Black LA Culture · Cannabis · Wellness · Music</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div style="background: var(--dark-green); color: var(--cream); padding: 16px 22px; border-radius: 2px; margin-bottom: 40px; display:flex; align-items:flex-start; gap:14px;">
+    <span style="font-size:20px; line-height:1;">🌿</span>
+    <p style="font-size:13px; line-height:1.7; opacity:0.9;"><strong style="font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.06em;">Cannabis Brand?</strong> This form is for general vendors only. Cannabis brand sponsorships are handled through a separate track. Email us at <strong><a href="mailto:vendors@poweredbymuse.com" style="color:var(--pink-light);">vendors@poweredbymuse.com</a></strong> to learn about cannabis sponsorship opportunities.</p>
+  </div>
+
+  <div style="margin-bottom:40px;">
+    <p class="section-label">About the Event</p>
+    <h2 class="section-heading">Where Culture Comes to Life</h2>
+    <p class="section-body">420 Fest blends weed yoga, curated DJ-led day party energy, and brand-forward cannabis activations into one elevated experience centered around Black LA culture. This year we're projecting 100 yoga participants and 300 day party attendees — a young, multicultural, experience-driven crowd that's always sharing content. Brands are integrated into the experience, not placed as ads. Fill out the form below to apply for a vendor spot.</p>
+  </div>
+
+  <form id="vendorForm">
+
+    <!-- SECTION 1: CONTACT INFO -->
+    <div class="form-block">
+      <h3 class="form-block-title">
+        <span class="form-block-num">01</span>
+        Your Information
+      </h3>
+
+      <div class="field-group">
+        <div>
+          <label>First Name <span class="required">*</span></label>
+          <input type="text" name="firstName" placeholder="First" required>
+        </div>
+        <div>
+          <label>Last Name <span class="required">*</span></label>
+          <input type="text" name="lastName" placeholder="Last" required>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div>
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" name="email" placeholder="you@email.com" required>
+        </div>
+        <div>
+          <label>Phone Number <span class="required">*</span></label>
+          <input type="tel" name="phone" placeholder="(323) 000-0000" required>
+        </div>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>Instagram Handle</label>
+          <input type="text" name="instagram" placeholder="@yourbrand">
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: BRAND INFO -->
+    <div class="form-block">
+      <h3 class="form-block-title">
+        <span class="form-block-num">02</span>
+        Brand / Business Info
+      </h3>
+
+      <div class="field-group">
+        <div>
+          <label>Brand / Business Name <span class="required">*</span></label>
+          <input type="text" name="brandName" placeholder="Your brand name" required>
+        </div>
+        <div>
+          <label>Website or Link Tree</label>
+          <input type="url" name="website" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>What type of vendor are you? <span class="required">*</span></label>
+          <select name="vendorType" required>
+            <option value="" disabled selected>Select a category</option>
+            <option>Wellness &amp; Beauty</option>
+            <option>Food &amp; Beverage</option>
+            <option>Apparel &amp; Accessories</option>
+            <option>Art &amp; Prints</option>
+            <option>Crystals &amp; Spiritual Goods</option>
+            <option>Mushrooms / Adaptogens / Functional Wellness</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>Describe your brand and what you'll be selling or activating <span class="required">*</span></label>
+          <textarea name="brandDescription" placeholder="Tell us about your brand, what you'll have at your table, and anything that makes your products special..." required></textarea>
+        </div>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>Why do you want to be a vendor at 420 Fest? <span class="required">*</span></label>
+          <textarea name="whyVendor" placeholder="Why is this event the right fit for your brand?" required></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: SETUP DETAILS -->
+    <div class="form-block">
+      <h3 class="form-block-title">
+        <span class="form-block-num">03</span>
+        Setup & Space Info
+      </h3>
+
+      <div style="background: var(--off-white); border-left: 3px solid var(--pink); padding: 18px 20px; margin-bottom: 24px; border-radius: 2px;">
+        <p style="font-size:14px; line-height:1.8; color: var(--dark-green);">Each vendor is allocated a <strong>10×10 space</strong> — that's yours to make your own. We do not provide tables, chairs, tents, or any equipment. You are responsible for bringing everything you need to build out your setup. Think about what will make your space visually compelling and on-brand for this crowd — this audience pays attention to aesthetics and shares what they love. Load-in begins at <strong>11:30 AM</strong> and all vendors must be fully set up by <strong>12:45 PM</strong>. The event runs <strong>1PM–7PM</strong> and breakdown begins promptly at 7PM.</p>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>Describe your planned setup <span class="required">*</span></label>
+          <textarea name="setupDetails" placeholder="Tell us what you're bringing — tent, table, backdrop, racks, signage, etc. Help us picture your space." required></textarea>
+        </div>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>Do you plan to offer samples, giveaways, or activations?</label>
+          <textarea name="activations" placeholder="E.g. product samples, raffles, interactive experiences, demos..." style="min-height:70px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: COMMUNITY FIT -->
+    <div class="form-block">
+      <h3 class="form-block-title">
+        <span class="form-block-num">04</span>
+        Community &amp; Content
+      </h3>
+
+      <div class="field-group single">
+        <div>
+          <label>How did you hear about 420 Fest?</label>
+          <select name="referral">
+            <option value="" disabled selected>Select one</option>
+            <option>Instagram</option>
+            <option>TikTok</option>
+            <option>Word of mouth</option>
+            <option>Previous attendee</option>
+            <option>Previous vendor</option>
+            <option>Email list</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="background: var(--off-white); border-left: 3px solid var(--dark-green); padding: 18px 20px; margin-bottom: 16px; border-radius: 2px;">
+        <p style="font-size:14px; line-height:1.8; color: var(--dark-green);"><strong>Content & Visibility:</strong> Being a vendor at 420 Fest means being part of the story we're telling. Our team will be capturing photo and video content throughout the event, and vendors will be featured in our social media coverage across Instagram and TikTok. By participating, you agree to be tagged, featured, and included in 420 Fest marketing content. This is part of the experience — and honestly, free promo for your brand.</p>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label>Content Participation <span class="required">*</span></label>
+        <label class="check-item" style="border-color: var(--dark-green);">
+          <input type="checkbox" name="contentAgree" required>
+          <span>
+            <div class="check-item-label" style="font-weight:500;">I understand that my brand and booth will be photographed and filmed as part of 420 Fest coverage, and I consent to being tagged and featured in event content across social media. <span class="required">*</span></div>
+          </span>
+        </label>
+      </div>
+
+      <div class="field-group single">
+        <div>
+          <label>Anything else you'd like us to know?</label>
+          <textarea name="additionalNotes" placeholder="Special requests, accessibility needs, collaborations you'd like to propose..." style="min-height:70px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- POLICIES -->
+    <div class="policy-box">
+      <h3>Vendor Policies</h3>
+      <ul>
+        <li>This is a <strong>general vendor application</strong>. Cannabis brand sponsorships are handled separately — email <strong><a href="mailto:vendors@poweredbymuse.com" style="color:var(--pink-light);">vendors@poweredbymuse.com</a></strong> for cannabis sponsorship details.</li>
+        <li>Each vendor receives a <strong>10×10 space</strong>. No tables, chairs, or equipment are provided. You are responsible for your full setup.</li>
+        <li>Vendor fee is <strong>$150</strong> and is due upon acceptance. Your spot is not confirmed until payment is received.</li>
+        <li>Load-in begins at 11:30 AM. All vendors must be fully set up by 12:45 PM. Event runs 1PM–7PM.</li>
+        <li>Vendors are responsible for their own sales, transactions, and compliance with applicable laws.</li>
+        <li>420 Fest reserves the right to refuse any vendor application that does not align with our community values.</li>
+        <li>No refunds issued after acceptance. Cancellations must be made 14+ days before the event for partial credit.</li>
+        <li>All vendors consent to photo/video coverage and social media tagging as part of participating in the event.</li>
+      </ul>
+    </div>
+
+    <!-- FEE SUMMARY -->
+    <div class="fee-summary">
+      <div class="fee-row">
+        <span>Vendor Space (10×10, 6 hours)</span>
+        <span class="amount">$150.00</span>
+      </div>
+      <div class="fee-row">
+        <span>Due Upon Acceptance</span>
+        <span class="amount" style="color:#3d5235;">Invoice sent via email</span>
+      </div>
+      <div class="fee-row total">
+        <span>Total</span>
+        <span class="amount">$150</span>
+      </div>
+    </div>
+
+    <!-- AGREEMENT -->
+    <div style="margin-bottom:32px;">
+      <label class="check-item" style="border-color: var(--dark-green);">
+        <input type="checkbox" name="agree" required>
+        <span>
+          <div class="check-item-label" style="font-weight:500;">I have read and agree to the 420 Fest Vendor Policies listed above. I understand my spot is not confirmed until payment is received. <span class="required">*</span></div>
+        </span>
+      </label>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <button type="submit" class="submit-btn"><span>Submit Application →</span></button>
+      <p class="submit-note">You'll receive a confirmation email within 3–5 business days</p>
+    </div>
+
+  </form>
+
+  <!-- SUCCESS -->
+  <div class="success-msg" id="successMsg">
+    <h2>You're in the mix 🌿</h2>
+    <p>Your vendor application has been submitted.<br>We'll be in touch within 3–5 business days.<br><br>Follow us on Instagram for updates: <strong>@andthatsok</strong></p>
+  </div>
+
+</main>
+
+<footer>
+  <p>420 Fest · April 19, 2026 · West Hollywood, CA &nbsp;|&nbsp; Produced by <a href="#">And That's OK</a> &nbsp;|&nbsp; Questions? DM us on IG</p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-st
